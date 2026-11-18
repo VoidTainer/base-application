@@ -1,0 +1,76 @@
+﻿@page
+@model BaseApplication.Pages.ReviewsModel
+@{
+    ViewData["Title"] = "Отзывы";
+}
+
+<h1>Отзывы клиентов</h1>
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert">@TempData["Msg"]</div>
+}
+
+@if (!Model.Items.Any())
+{
+    <div class="card">
+        <p>Пока нет опубликованных отзывов. Станьте первым!</p>
+    </div>
+}
+else
+{
+    <div class="grid">
+        @foreach (var r in Model.Items)
+        {
+            <div class="card review">
+                @{
+                    var stars = new string('★', Math.Clamp(r.Rating, 0, 5))
+                    + new string('☆', 5 - Math.Clamp(r.Rating, 0, 5));
+                }
+                <div class="stars">@stars</div>
+                <p>@r.Text</p>
+                <p class="author">— @r.AuthorName, @r.CreatedAt.ToString("dd.MM.yyyy")</p>
+            </div>
+        }
+    </div>
+}
+
+<h2>Оставить отзыв</h2>
+
+@if (User.Identity!.IsAuthenticated)
+{
+    <form method="post" class="card form">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="error"></div>
+        }
+
+        <label>
+            Оценка
+            <select asp-for="Rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <option value="@i">@i ★</option>
+                }
+            </select>
+        </label>
+
+        <label>
+            Текст отзыва
+            <textarea asp-for="Text" required maxlength="1000"
+                      placeholder="Расскажите о вашем отдыхе..."></textarea>
+        </label>
+
+        <button type="submit" class="btn primary">Отправить</button>
+        <p class="small">Отзыв появится после проверки администратором.</p>
+    </form>
+}
+else
+{
+    <div class="card">
+        <p>
+            Чтобы оставить отзыв, <a asp-page="/Account/Login" asp-route-ReturnUrl="/Reviews">войдите</a>
+            или <a asp-page="/Account/Register">зарегистрируйтесь</a>.
+        </p>
+    </div>
+}

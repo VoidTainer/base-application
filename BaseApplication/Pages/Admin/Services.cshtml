@@ -1,0 +1,55 @@
+﻿@page
+@model BaseApplication.Pages.Admin.ServicesModel
+@{
+    ViewData["Title"] = "Услуги — админка";
+}
+
+<h1>Управление услугами</h1>
+@if (TempData["Msg"] != null)
+{
+    <div class="alert">@TempData["Msg"]</div>
+}
+
+<div class="grid">
+    <form method="post" asp-page-handler="Save" class="card form">
+        <h3>@(Model.Input.Id == 0 ? "Новая услуга" : "Редактирование услуги")</h3>
+        <input type="hidden" asp-for="Input.Id" />
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="error"></div>
+        }
+        <label>Название<input asp-for="Input.Name" required /></label>
+        <label>Описание<textarea asp-for="Input.Description"></textarea></label>
+        <label>Цена<input asp-for="Input.Price" type="number" step="0.01" min="0" /></label>
+        <label>URL картинки<input asp-for="Input.ImageUrl" /></label>
+        <label class="checkbox"><input asp-for="Input.IsActive" /> Активна</label>
+        <button type="submit" class="btn primary">Сохранить</button>
+    </form>
+
+    <div class="card">
+        <h3>Список услуг</h3>
+        <table class="table">
+            <thead><tr><th>Название</th><th>Цена</th><th>Активна</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var s in Model.Items)
+                {
+                    <tr>
+                        <td>@s.Name</td>
+                        <td>@s.Price.ToString("C0")</td>
+                        <td>@(s.IsActive ? "Да" : "Нет")</td>
+                        <td>
+                            <form method="post" asp-page-handler="Edit" asp-route-id="@s.Id" class="inline">
+                                <button type="submit" class="btn-link">Изменить</button>
+                            </form>
+                            |
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@s.Id" class="inline"
+                                  onsubmit="return confirm('Удалить?');">
+                                <button type="submit" class="btn-link">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

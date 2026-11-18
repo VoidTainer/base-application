@@ -1,0 +1,71 @@
+﻿@page
+@model BaseApplication.Pages.BookingModel
+@{
+    ViewData["Title"] = "Бронирование";
+}
+
+<h1>Бронирование</h1>
+<p>Выберите дату, время, количество гостей и дополнительные услуги.</p>
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert">@TempData["Msg"]</div>
+}
+
+<form method="post" class="card form">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="ModelOnly" class="error"></div>
+    }
+
+    <div class="form-row">
+        <label>
+            Дата
+            <input type="date" asp-for="Date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="Date" class="field-validation-error"></span>
+        </label>
+        <label>
+            Время начала
+            <input type="time" asp-for="StartTime" min="08:00" max="22:00" />
+            <span asp-validation-for="StartTime" class="field-validation-error"></span>
+        </label>
+        <label>
+            Гостей
+            <input type="number" asp-for="Guests" min="1" max="100" />
+            <span asp-validation-for="Guests" class="field-validation-error"></span>
+        </label>
+    </div>
+
+    <fieldset>
+        <legend>Дополнительные услуги</legend>
+        @if (Model.AllServices.Any())
+        {
+            <div class="checkbox-grid">
+                @foreach (var s in Model.AllServices)
+                {
+                    <label class="checkbox">
+                        <input type="checkbox" name="SelectedServiceIds" value="@s.Id"
+                               @(Model.SelectedServiceIds.Contains(s.Id) ? "checked" : "") />
+                        @s.Name — @s.Price.ToString("C0")
+                    </label>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="muted">Дополнительные услуги пока недоступны.</p>
+        }
+    </fieldset>
+
+    <label>
+        Комментарий
+        <textarea asp-for="Comment" placeholder="Пожелания, особые условия..."></textarea>
+    </label>
+
+    <button type="submit" class="btn primary">Забронировать</button>
+    <p class="small">После отправки заявка получит статус «Ожидает» — менеджер подтвердит её в админ-панели.</p>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

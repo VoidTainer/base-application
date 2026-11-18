@@ -1,0 +1,17 @@
+﻿@page
+@model BaseApplication.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+<h1>Регистрация</h1>
+<form method="post" class="card form">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="ModelOnly" class="error"></div>
+    }
+    <label>Имя<input asp-for="Input.FullName" required /></label>
+    <label>Email<input asp-for="Input.Email" type="email" required /></label>
+    <label>Пароль<input asp-for="Input.Password" type="password" minlength="6" required /></label>
+    <button class="btn primary" type="submit">Создать аккаунт</button>
+</form>
+<p><a asp-page="/Account/Login">Уже есть аккаунт? Войти</a></p>

@@ -1,0 +1,38 @@
+﻿@page
+@model BaseApplication.Pages.ContactsModel
+@{
+    ViewData["Title"] = "Контакты";
+}
+
+<h1>Контакты</h1>
+@if (TempData["Msg"] != null)
+{
+    <div class="alert">@TempData["Msg"]</div>
+}
+
+<div class="grid">
+    <div class="card">
+        <h3>Как нас найти</h3>
+        <p> Лесная ул., 1, Московская область</p>
+        <p> <a href="tel:+79001234567">+7 900 123-45-67</a></p>
+        <p> info@base.ru</p>
+        <a href="tel:+79001234567" class="call-btn"> Позвонить</a>
+    </div>
+    <div class="card">
+        <h3>Карта проезда</h3>
+        <iframe src="https://yandex.ru/map-widget/v1/?text=Лесная%201"
+                width="100%" height="300" style="border:0" loading="lazy"></iframe>
+    </div>
+</div>
+
+<h2>Обратная связь</h2>
+<form method="post" class="card form">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="ModelOnly" class="error"></div>
+    }
+    <label>Имя<input asp-for="Input.Name" required /></label>
+    <label>Email<input asp-for="Input.Email" type="email" required /></label>
+    <label>Сообщение<textarea asp-for="Input.Message" required></textarea></label>
+    <button type="submit" class="btn primary">Отправить</button>
+</form>

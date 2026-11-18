@@ -1,0 +1,43 @@
+﻿@page
+@model BaseApplication.Pages.Admin.MessagesModel
+@{
+    ViewData["Title"] = "Сообщения — админка";
+}
+
+<h1>Сообщения с формы обратной связи</h1>
+
+@if (!Model.Items.Any())
+{
+    <div class="card"><p>Сообщений нет.</p></div>
+}
+else
+{
+    <table class="table">
+        <thead><tr><th>Дата</th><th>Имя</th><th>Email</th><th>Сообщение</th><th>Прочитано</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var m in Model.Items)
+            {
+                <tr>
+                    <td>@m.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@m.Name</td>
+                    <td><a href="mailto:@m.Email">@m.Email</a></td>
+                    <td>@m.Message</td>
+                    <td>@(m.IsRead ? "Да" : "Нет")</td>
+                    <td>
+                        @if (!m.IsRead)
+                        {
+                            <form method="post" asp-page-handler="MarkRead" asp-route-id="@m.Id" class="inline">
+                                <button class="btn-link">Прочитано</button>
+                            </form>
+                            <span> | </span>
+                        }
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@m.Id" class="inline"
+                              onsubmit="return confirm('Удалить сообщение?');">
+                            <button class="btn-link">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

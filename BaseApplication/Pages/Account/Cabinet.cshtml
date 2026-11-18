@@ -1,0 +1,79 @@
+﻿@page
+@model BaseApplication.Pages.Account.CabinetModel
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<h1>Личный кабинет</h1>
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert">@TempData["Msg"]</div>
+}
+
+<div class="grid">
+    <div class="card">
+        <h2>Профиль</h2>
+        <p><b>Имя:</b> @Model.Me?.FullName</p>
+        <p><b>Email:</b> @Model.Me?.Email</p>
+        <p><b>Дата регистрации:</b> @Model.Me?.CreatedAt.ToString("dd.MM.yyyy")</p>
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+        {
+            <a asp-page="/Admin/Index" class="btn primary">Перейти в админ-панель</a>
+        }
+    </div>
+
+    <div class="card">
+        <h2>Быстрые действия</h2>
+        <p><a asp-page="/Booking" class="btn primary">Новое бронирование</a></p>
+        <p><a asp-page="/Services" class="btn outline">Все услуги</a></p>
+        <p><a asp-page="/Reviews" class="btn outline">Оставить отзыв</a></p>
+        <p><a asp-page="/Index" class="btn outline">На главную</a></p>
+    </div>
+</div>
+
+<h2>История бронирований</h2>
+
+@if (!Model.Bookings.Any())
+{
+    <div class="card">
+        <p>У вас ещё нет бронирований. <a asp-page="/Booking">Создать первое →</a></p>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>Гостей</th>
+                <th>Услуги</th>
+                <th>Статус</th>
+                <th>Создано</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model.Bookings)
+            {
+                <tr>
+                    <td>@b.Date.ToString("dd.MM.yyyy")</td>
+                    <td>@b.StartTime.ToString(@"hh\:mm")</td>
+                    <td>@b.Guests</td>
+                    <td>
+                        @if (b.BookingServices.Any())
+                        {
+                            @string.Join(", ", b.BookingServices.Select(x => x.Service?.Name))
+                        }
+                        else
+                        {
+                            <span class="muted">—</span>
+                        }
+                    </td>
+                    <td><partial name="_BookingStatus" model="b.Status" /></td>
+                    <td>@b.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

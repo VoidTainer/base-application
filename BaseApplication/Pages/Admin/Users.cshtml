@@ -1,0 +1,35 @@
+﻿@page
+@model BaseApplication.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "Пользователи — админка";
+}
+
+<h1>Пользователи и роли</h1>
+@if (TempData["Msg"] != null)
+{
+    <div class="alert">@TempData["Msg"]</div>
+}
+
+<table class="table">
+    <thead><tr><th>Email</th><th>Имя</th><th>Роль</th><th>Изменить</th></tr></thead>
+    <tbody>
+        @foreach (var u in Model.Items)
+        {
+            <tr>
+                <td>@u.Email</td>
+                <td>@u.FullName</td>
+                <td>@u.Role</td>
+                <td>
+                    <form method="post" asp-page-handler="SetRole" asp-route-id="@u.Id" class="inline">
+                        <select name="role">
+                            <option value="User">User</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <button class="btn-link" type="submit">Применить</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

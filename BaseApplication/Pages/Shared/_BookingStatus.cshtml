@@ -1,0 +1,11 @@
+﻿@model BaseApplication.Models.BookingStatus
+@{
+    var (cls, label) = Model switch
+    {
+        BaseApplication.Models.BookingStatus.Pending => ("pending", "Ожидает"),
+        BaseApplication.Models.BookingStatus.Confirmed => ("confirmed", "Подтверждено"),
+        BaseApplication.Models.BookingStatus.Cancelled => ("cancelled", "Отменено"),
+        _ => ("", "")
+    };
+}
+<span class="badge @cls">@label</span>

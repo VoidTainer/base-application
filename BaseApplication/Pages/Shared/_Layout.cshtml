@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BaseApplication</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BaseApplication.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a asp-page="/Index" class="logo" aria-label="На главную">
+                <span class="logo-text">База отдыха</span>
+            </a>
+
+            <button class="nav-toggle" id="nav-toggle" aria-label="Меню" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
+                <a asp-page="/About">О базе</a>
+                <a asp-page="/Services">Услуги</a>
+                <a asp-page="/Booking">Бронирование</a>
+                <a asp-page="/Reviews">Отзывы</a>
+                <a asp-page="/Contacts">Контакты</a>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-page="/Account/Cabinet" class="nav-account">
+                        Личный кабинет
+                    </a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-page="/Admin/Index" class="admin-link">Админка</a>
+                    }
+                    <form method="post" asp-page="/Account/Logout" class="inline">
+                        <button type="submit" class="btn-link nav-logout">Выйти</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-page="/Account/Login">Войти</a>
+                    <a asp-page="/Account/Register" class="nav-register">Регистрация</a>
+                }
+            </nav>
+
+            <a href="tel:+79001234567" class="call-btn" aria-label="Позвонить администратору">
+                <svg class="call-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07
+                 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3
+                 a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91
+                 a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7
+                 A2 2 0 0 1 22 16.92z" />
+                </svg>
+                <span class="call-btn-text">Позвонить</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-col footer-about">
+                <a asp-page="/Index" class="footer-logo">
+                    База отдыха
+                </a>
+                <p>Комфортный отдых на природе: баня, экскурсии, фермерская кухня и тишина леса. Работаем с 2010 года.</p>
+                <div class="footer-socials">
+                    <a href="https://vk.com" target="_blank" rel="noopener" aria-label="VK">VK</a>
+                    <a href="https://t.me" target="_blank" rel="noopener" aria-label="Telegram">TG</a>
+                    <a href="https://wa.me/79001234567" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Навигация</h4>
+                <ul class="footer-links">
+                    <li><a asp-page="/About">О базе</a></li>
+                    <li><a asp-page="/Services">Услуги</a></li>
+                    <li><a asp-page="/Booking">Бронирование</a></li>
+                    <li><a asp-page="/Reviews">Отзывы</a></li>
+                    <li><a asp-page="/Contacts">Контакты</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Контакты</h4>
+                <ul class="footer-links footer-contacts">
+                    <li>Лесная ул., 1, Московская область</li>
+                    <li><a href="tel:+79001234567">+7 900 123-45-67</a></li>
+                    <li><a href="mailto:info@base.ru">info@base.ru</a></li>
+                    <li>Ежедневно 9:00 – 21:00</li>
+                </ul>
+                <a href="tel:+79001234567" class="call-btn call-btn-footer">Позвонить</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Информация</h4>
+                <ul class="footer-links">
+                    <li><a href="#" data-legal="privacy">Политика конфиденциальности</a></li>
+                    <li><a href="#" data-legal="terms">Пользовательское соглашение</a></li>
+                    <li><a href="#" data-legal="offer">Публичная оферта</a></li>
+                </ul>
+                <p class="footer-devs">
+                    Разработчики: <br />
+                    команда <strong>ASP.NET Razor</strong><br />
+                    <a href="mailto:dev@base.ru">dev@base.ru</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <span>(c) 2026 База отдыха. Все права защищены.</span>
+                <span>Сделано на ASP.NET Core Razor Pages</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

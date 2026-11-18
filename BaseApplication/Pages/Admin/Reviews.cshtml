@@ -1,0 +1,43 @@
+﻿@page
+@model BaseApplication.Pages.Admin.ReviewsModel
+@{
+    ViewData["Title"] = "Отзывы — админка";
+}
+
+<h1>Модерация отзывов</h1>
+
+@if (!Model.Items.Any())
+{
+    <div class="card"><p>Отзывов нет.</p></div>
+}
+else
+{
+    <table class="table">
+        <thead><tr><th>Дата</th><th>Автор</th><th>Оценка</th><th>Текст</th><th>Статус</th><th>Действия</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Items)
+            {
+                <tr>
+                    <td>@r.CreatedAt.ToString("dd.MM.yyyy")</td>
+                    <td>@r.AuthorName</td>
+                    <td>@r.Rating ★</td>
+                    <td>@r.Text</td>
+                    <td>@(r.IsApproved ? "Опубликован" : "На модерации")</td>
+                    <td>
+                        @if (!r.IsApproved)
+                        {
+                            <form method="post" asp-page-handler="Approve" asp-route-id="@r.Id" class="inline">
+                                <button class="btn-link">Одобрить</button>
+                            </form>
+                            <span> | </span>
+                        }
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@r.Id" class="inline"
+                              onsubmit="return confirm('Удалить отзыв?');">
+                            <button class="btn-link">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

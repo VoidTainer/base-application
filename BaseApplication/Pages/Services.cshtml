@@ -1,0 +1,42 @@
+﻿@page
+@model BaseApplication.Pages.ServicesModel
+@{
+    ViewData["Title"] = "Услуги";
+}
+
+<h1>Услуги базы отдыха</h1>
+<p>Выберите услуги при оформлении бронирования — они будут добавлены к заказу.</p>
+
+@if (!Model.Items.Any())
+{
+    <div class="card">
+        <p>Пока услуги не добавлены. Загляните позже.</p>
+    </div>
+}
+else
+{
+    <div class="grid">
+        @foreach (var s in Model.Items)
+        {
+            <div class="card service-card">
+                @if (!string.IsNullOrWhiteSpace(s.ImageUrl))
+                {
+                    <img src="@s.ImageUrl" alt="@s.Name" class="service-img" />
+                }
+                <h3>@s.Name</h3>
+                <p>@s.Description</p>
+                <p class="price">@s.Price.ToString("C0")</p>
+                <div class="service-actions">
+                    <a asp-page="/Booking" class="btn primary">Выбрать при бронировании</a>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<div class="block cta">
+    <h2>Готовы отдохнуть?</h2>
+    <p>Выберите дату, время и дополнительные услуги — мы всё организуем.</p>
+    <a asp-page="/Booking" class="btn primary">Оформить бронирование</a>
+    <a asp-page="/Contacts" class="btn outline">Связаться</a>
+</div>

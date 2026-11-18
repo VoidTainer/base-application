@@ -1,0 +1,198 @@
+﻿@page
+@model BaseApplication.Pages.IndexModel
+@{
+    ViewData["Title"] = "База отдыха — комфортный отдых на природе";
+}
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert">@TempData["Msg"]</div>
+}
+
+<section class="slider" id="hero-slider">
+    <div class="slide active"
+         style="background-image:url('https://picsum.photos/1600/700?nature=10')">
+        <div class="slide-overlay">
+            <div class="slide-content">
+                <span class="badge-promo">Сезонная акция −20%</span>
+                <h1>Уютная база отдыха на природе</h1>
+                <p>Баня, экскурсии, домашняя кухня и тишина леса. Бронируйте прямо сейчас.</p>
+                <a href="#booking-form" class="btn primary">Забронировать</a>
+                <a asp-page="/Services" class="btn outline light">Все услуги</a>
+            </div>
+        </div>
+    </div>
+    <div class="slide"
+         style="background-image:url('https://picsum.photos/1600/700?nature=20')">
+        <div class="slide-overlay">
+            <div class="slide-content">
+                <span class="badge-promo">Выходные на природе</span>
+                <h2>Баня на дровах и домашняя кухня</h2>
+                <p>Настоящая русская баня и трёхразовое питание из фермерских продуктов.</p>
+                <a href="#booking-form" class="btn primary">Выбрать дату</a>
+                <a asp-page="/About" class="btn outline light">О базе</a>
+            </div>
+        </div>
+    </div>
+    <div class="slide"
+         style="background-image:url('https://picsum.photos/1600/700?nature=30')">
+        <div class="slide-overlay">
+            <div class="slide-content">
+                <span class="badge-promo">Для всей семьи</span>
+                <h2>Экскурсии и аренда инвентаря</h2>
+                <p>Пешие прогулки с гидом, мангал и спортинвентарь — всё включено в услуги.</p>
+                <a href="#booking-form" class="btn primary">Забронировать</a>
+                <a asp-page="/Contacts" class="btn outline light">Связаться</a>
+            </div>
+        </div>
+    </div>
+
+    <button class="slider-arrow prev" aria-label="Назад">‹</button>
+    <button class="slider-arrow next" aria-label="Вперёд">›</button>
+    <div class="slider-dots"></div>
+</section>
+
+<section class="block" id="about">
+    <h2>О базе отдыха</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>История</h3>
+            <p>
+                С 2010 года мы принимаем гостей в тихом уголке леса. Начали с одной бани и двух домиков,
+                сегодня — полноценная инфраструктура для отдыха с семьёй и друзьями.
+            </p>
+        </div>
+        <div class="card">
+            <h3>Наша миссия</h3>
+            <p>
+                Сделать отдых на природе доступным, комфортным и безопасным — чтобы каждый гость
+                возвращался домой отдохнувшим и с новыми силами.
+            </p>
+        </div>
+        <div class="card">
+            <h3>Преимущества</h3>
+            <ul>
+                <li>Собственная баня и фермерская кухня</li>
+                <li>Тихая территория у леса</li>
+                <li>Продуманная инфраструктура</li>
+                <li>Опытные гиды и аниматоры</li>
+            </ul>
+        </div>
+    </div>
+    <p><a asp-page="/About" class="link">Подробнее о базе →</a></p>
+</section>
+
+<section class="block" id="services">
+    <h2>Наши услуги</h2>
+    <div class="grid">
+        @foreach (var s in Model.Services)
+        {
+            <div class="card service-card">
+                <h3>@s.Name</h3>
+                <p>@s.Description</p>
+                <p class="price">@s.Price.ToString("C0")</p>
+                <a asp-page="/Services" class="link">Подробнее →</a>
+            </div>
+        }
+    </div>
+    <p><a asp-page="/Services" class="link">Все услуги →</a></p>
+</section>
+
+<section class="block" id="reviews">
+    <h2>Отзывы клиентов</h2>
+    <div class="grid">
+        @foreach (var r in Model.FeaturedReviews)
+        {
+            <div class="card review">
+                <div class="stars">@(new string('★', r.Rating))@(new string('☆', 5 - r.Rating))</div>
+                <p>@r.Text</p>
+                <p class="author">— @r.AuthorName</p>
+            </div>
+        }
+    </div>
+    <p><a asp-page="/Reviews" class="link">Все отзывы →</a></p>
+</section>
+
+<section class="block booking-section" id="booking-form">
+    <h2>Забронировать отдых</h2>
+    <p>Выберите дату, время и дополнительные услуги — мы свяжемся и подтвердим бронь.</p>
+
+    <form method="post" asp-page-handler="Book" class="card form">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="error"></div>
+        }
+
+        <div class="form-row">
+            <label>
+                Дата
+                <input type="date" asp-for="Date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="Date" class="field-validation-error"></span>
+            </label>
+            <label>
+                Время начала
+                <input type="time" asp-for="StartTime" min="08:00" max="22:00" />
+                <span asp-validation-for="StartTime" class="field-validation-error"></span>
+            </label>
+            <label>
+                Гостей
+                <input type="number" asp-for="Guests" min="1" max="100" />
+                <span asp-validation-for="Guests" class="field-validation-error"></span>
+            </label>
+        </div>
+
+        <fieldset>
+            <legend>Дополнительные услуги</legend>
+            <div class="checkbox-grid">
+                @foreach (var s in Model.Services)
+                {
+                    <label class="checkbox">
+                        <input type="checkbox" name="SelectedServiceIds" value="@s.Id"
+                               @(Model.SelectedServiceIds.Contains(s.Id) ? "checked" : "") />
+                        @s.Name — @s.Price.ToString("C0")
+                    </label>
+                }
+            </div>
+        </fieldset>
+
+        <label>
+            Комментарий
+            <textarea asp-for="Comment" placeholder="Пожелания, особые условия..."></textarea>
+        </label>
+
+        <button type="submit" class="btn primary">Забронировать</button>
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <p class="small">Для оформления брони нужно <a asp-page="/Account/Login">войти</a>.</p>
+        }
+    </form>
+</section>
+
+<section class="block call-cta">
+    <h2>Есть вопросы? Позвоните администратору</h2>
+    <p>Ответим с 9:00 до 21:00 без выходных.</p>
+    <a href="tel:+79001234567" class="call-btn big"> Позвонить: +7 900 123-45-67</a>
+</section>
+
+<section class="block" id="contacts">
+    <h2>Как нас найти</h2>
+    <div class="grid contacts-grid">
+        <div class="card">
+            <h3>Контакты</h3>
+            <p> Лесная ул., 1, Московская область</p>
+            <p> <a href="tel:+79001234567">+7 900 123-45-67</a></p>
+            <p> <a href="mailto:info@base.ru">info@base.ru</a></p>
+            <p> Ежедневно 9:00 – 21:00</p>
+            <a href="tel:+79001234567" class="call-btn"> Позвонить</a>
+        </div>
+        <div class="card map-card">
+            <h3>Карта проезда</h3>
+            <iframe src="https://yandex.ru/map-widget/v1/?text=Лесная%201"
+                    width="100%" height="320" style="border:0" loading="lazy"></iframe>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
